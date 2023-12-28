@@ -116,8 +116,9 @@ void imprimirBasePlaylist(FILE *out) {
     free(playlist);
 }
 
+int cont = 0;
 //Mesclar duas partições ordenadas
-void merge(FILE *arq, int inicio, int meio, int fim) {
+void mergePlaylist(FILE *arq, int inicio, int meio, int fim) {
     int i, j, k;
     int n1 = meio - inicio + 1;
     int n2 = fim - meio;
@@ -151,6 +152,7 @@ void merge(FILE *arq, int inicio, int meio, int fim) {
             j++;
         }
         k++;
+        cont++;
     }
 
     // Copia os elementos restantes, se houver, de esq[] para o arquivo
@@ -172,16 +174,78 @@ void merge(FILE *arq, int inicio, int meio, int fim) {
 }
 
 //Ordenação por MergeSort
-void mergeSort(FILE *arq, int inicio, int fim) {
+int mergeSortPlaylist(FILE *arq, int inicio, int fim) {
     if (inicio < fim) {
         int meio = inicio + (fim - inicio) / 2;
 
-        mergeSort(arq, inicio, meio);
-        mergeSort(arq, meio + 1, fim);
+        mergeSortPlaylist(arq, inicio, meio);
+        mergeSortPlaylist(arq, meio + 1, fim);
 
-        merge(arq, inicio, meio, fim);
+        mergePlaylist(arq, inicio, meio, fim);
     }
+    return cont;
 }
+
+void selecaoNaturalPlaylist(FILE *arqEntrada, int M) {
+    TPlaylist *reservatorio = (TPlaylist *)malloc(M * sizeof(TPlaylist)); //reservatório do tamanho da entrada
+    int posicaoReservatorio = 0;
+    int numParticao = 1;
+
+    //(Passo 1) Leitura inicial dos primeiros M registros do arquivo para o reservatório
+    for (int i = 0; i < M; i++) {
+        if (fread(&reservatorio[i], sizeof(TPlaylist), 1, arqEntrada) != 1) {
+            break;
+        }
+    }
+
+    while (1) { //Enquanto houver registros no arqEntrada
+        //(Passo 2) Encontrar o registro com a menor chave no reservatório
+        int menorChave = 0;
+        for (int i = 1; i < M; i    ++) {
+            if (reservatorio[i].id < reservatorio[menorChave].id) {
+                menorChave = i;
+            }
+        }
+
+
+        //(Passo 3) Abre a partição de saída, grava o registro ordenado e fecha
+        char nomeParticao[20];
+        sprintf(nomeParticao, "partitions_playlist/particao_%d.dat", numParticao);
+        FILE *out = fopen(nomeParticao, "w+b");
+        fwrite(&reservatorio[menorChave], sizeof(TPlaylist), 1, out);
+        fclose(out);
+
+        //(Passo 4) Substituir, no reservatório, o registro r pelo próximo registro do arqEntrada
+        if (fread(&reservatorio[menorChave], sizeof(TPlaylist), 1, arqEntrada) != 1) {
+            break;
+        }
+
+        //(Passo 5) Se a chave do último registro lido for menor que a chave recém gravada na partição, colocar no reservatório
+        if (reservatorio[menorChave].id < reservatorio[0].id) {
+            posicaoReservatorio = 0;
+            continue;
+        }
+
+        //(Passo 6) Copiar registros restantes do reservatório para o array principal em memória
+        int i;
+        for (i = 0; i < M; i++) {
+            if (fread(&reservatorio[i], sizeof(TPlaylist), 1, arqEntrada) != 1) {
+                break;
+            }
+        }
+
+        //(Passo 7) Atualiza o restante do reservatório com novos registros do arquivo de entrada
+        posicaoReservatorio = i;
+        numParticao++;
+
+        // Se o reservatório está cheio, grava a próxima partição de saída
+        if (i == M) {
+            i = 0; // Reinicia o índice do reservatório
+        }
+    }
+    free(reservatorio);
+}
+
 
 /*
 //escrever a busca sequencial no log

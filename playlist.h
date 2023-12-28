@@ -58,11 +58,13 @@ int tamanhoRegistroPlaylist();
 int tamanhoArquivoPlaylist(FILE * arq);
 
 //Mesclar duas partições ordenadas
-void merge(FILE *arq, int inicio, int meio, int fim);
+void mergePlaylist(FILE *arq, int inicio, int meio, int fim);
 
 //Ordenação por MergeSort
-void mergeSort(FILE *arq, int inicio, int fim);
+int mergeSortPlaylist(FILE *arq, int inicio, int fim);
 
+//Seleção Natural para partições maiores
+void selecaoNaturalPlaylist(FILE *arqEntrada, int M);
 /*
 //ordena base de dados com insertion sort
 void insertionSortPlaylist(FILE *arq, FILE *log, int tam);

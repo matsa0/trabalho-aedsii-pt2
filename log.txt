@@ -1,2 +1,0 @@
-***Base de dados (1.000) de PLAYLIST***
-Tempo de ordenação com MERGE SORT > 4.24 segundos.
