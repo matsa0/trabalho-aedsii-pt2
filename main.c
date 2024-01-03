@@ -46,6 +46,9 @@ int main() {
             fclose(arqPlaylist);
         }
 
+
+
+
         // Criar uma nova base desordenada para a classificação externa
         if ((arqPlaylist = fopen("playlist2.dat", "w+b")) == NULL) {
             printf("ERRO! Não foi possível encontrar ou criar o arquivo PLAYLIST2!\n");
@@ -61,12 +64,14 @@ int main() {
             exit(1);
         } else {
             clock_t startClassificacaoExterna = clock();
-            selecaoNaturalPlaylist(arqPlaylist, 256);
+            int countSelecaoNatural = 0;
+            selecaoNaturalPlaylist(arqPlaylist, 256, &countSelecaoNatural);
 
             capturaParticoes(pastaPlaylist, particoesArquivos, &numeroParticoes);
 
+            int countIntercalacaoOtima = 0;
             if (numeroParticoes > 0) {
-                intercalacaoOtima(particoesArquivos, "partitions_playlist/playlist_intercalada.dat", numeroParticoes);
+                intercalacaoOtima(particoesArquivos, "partitions_playlist/playlist_intercalada.dat", numeroParticoes, &countIntercalacaoOtima);
                 printf("Intercalacao PLAYLIST concluida com sucesso!\n");
             } else {
                 printf("Nenhuma particao de PLAYLIST encontrada no diretorio.\n");
@@ -75,6 +80,7 @@ int main() {
 
             double timeClassificacao = ((double)(endClassificacaoExterna - startClassificacaoExterna)) / CLOCKS_PER_SEC;
             fprintf(log, "\n\nTempo de ordenação com SELEÇÃO NATURAL e INTERCALAÇÃO ÓTIMA > %.2f segundos.", timeClassificacao);
+            fprintf(log, "\nNúmero de comparações com SELEÇÃO NATURAL + INTERCALAÇÃO ÓTIMA > %d", countSelecaoNatural + countIntercalacaoOtima);
 
             // Liberar memória alocada para os nomes das partições
             for (int i = 0; i < numeroParticoes; i++) {

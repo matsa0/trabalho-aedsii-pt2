@@ -187,7 +187,7 @@ int mergeSortPlaylist(FILE *arq, int inicio, int fim) {
     return cont;
 }
 
-void selecaoNaturalPlaylist(FILE *arqEntrada, int M) {
+void selecaoNaturalPlaylist(FILE *arqEntrada, int M, int *numComparacoes) {
     TPlaylist *reservatorio = (TPlaylist *)malloc(M * sizeof(TPlaylist)); //reservatório do tamanho da entrada
     int posicaoReservatorio = 0;
     int numParticao = 1;
@@ -202,7 +202,8 @@ void selecaoNaturalPlaylist(FILE *arqEntrada, int M) {
     while (1) { //Enquanto houver registros no arqEntrada
         //(Passo 2) Encontrar o registro com a menor chave no reservatório
         int menorChave = 0;
-        for (int i = 1; i < M; i    ++) {
+        for (int i = 1; i < M; i++) {
+            (*numComparacoes)++;
             if (reservatorio[i].id < reservatorio[menorChave].id) {
                 menorChave = i;
             }
@@ -245,6 +246,7 @@ void selecaoNaturalPlaylist(FILE *arqEntrada, int M) {
         }
     }
     free(reservatorio);
+    return *numComparacoes;
 }
 
 

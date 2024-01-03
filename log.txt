@@ -1,5 +1,6 @@
 ***Base de dados (50.000) de PLAYLIST***
-Tempo de ordenação com MERGE SORT > 1.05 segundos.
-Número de comparações com MERGE SORT > 527008
+Tempo de ordenação com MERGE SORT > 1.11 segundos.
+Número de comparações com MERGE SORT > 529587
 
-Tempo de ordenação com SELEÇÃO NATURAL e INTERCALAÇÃO ÓTIMA > 0.31 segundos.
+Tempo de ordenação com SELEÇÃO NATURAL e INTERCALAÇÃO ÓTIMA > 0.21 segundos.
+Número de comparações com SELEÇÃO NATURAL + INTERCALAÇÃO ÓTIMA > 119363

@@ -5,7 +5,7 @@
 
 #define F 10 // Número de partições a serem intercaladas em cada fase
 
-void intercalacaoOtima(const char **nomeParticoes, const char *nomeArquivoSaida, int numParticoes) {
+void intercalacaoOtima(const char **nomeParticoes, const char *nomeArquivoSaida, int numParticoes, int *numComparacoes) {
     FILE **particoes = (FILE **)malloc(F * sizeof(FILE *));
     FILE *arquivoSaida = fopen(nomeArquivoSaida, "w");
 
@@ -27,6 +27,7 @@ void intercalacaoOtima(const char **nomeParticoes, const char *nomeArquivoSaida,
                     if(menorIndice == -1 || particoes[i] < particoes[menorIndice]) {
                         menorIndice = i;
                     }
+                    (*numComparacoes)++;
                 }
             }
 
