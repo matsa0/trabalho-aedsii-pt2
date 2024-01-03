@@ -10,6 +10,7 @@
 #include "limits.h"
 #include <string.h>
 #include <math.h>
+#include "particoes.h"
 
 //Retorna o tamanho da playlist em bytes
 int tamanhoRegistroPlaylist() {
@@ -245,6 +246,7 @@ void selecaoNaturalPlaylist(FILE *arqEntrada, int M) {
     }
     free(reservatorio);
 }
+
 
 
 /*
