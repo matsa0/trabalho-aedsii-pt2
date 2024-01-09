@@ -56,13 +56,17 @@ int tamanhoRegistroMusicas();
 
 int tamanhoArquivoMusicas(FILE * arq);
 
+//Mesclar duas partições ordenadas
+void mergeMusicas(FILE *arq, int inicio, int meio, int fim);
+
+//Ordenação por MergeSort
+int mergeSortMusicas(FILE *arq, int inicio, int fim);
+
+//Seleção Natural para partições maiores
+int selecaoNaturalMusicas(FILE *arqEntrada, int M, int *numComparacoes);
+
+/*
 //Adiciona review para a música
 void adicionaReview(TMusicas* musica, TReviews* review);
-
-//Classificação interna Musicas
-int classificacaoInternaMusicas(FILE *arq, int M);
-
-//Junta as partições classificadas , gerando um arquivo classificado
-void intercalacaoBasicaMusicas(FILE *out, int num_p);
-
+*/
 #endif //TP02_AEDSII_CSI104_MUSICAS_H

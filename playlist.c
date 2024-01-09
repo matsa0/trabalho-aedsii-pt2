@@ -187,7 +187,7 @@ int mergeSortPlaylist(FILE *arq, int inicio, int fim) {
     return cont;
 }
 
-void selecaoNaturalPlaylist(FILE *arqEntrada, int M, int *numComparacoes) {
+int selecaoNaturalPlaylist(FILE *arqEntrada, int M, int *numComparacoes) {
     TPlaylist *reservatorio = (TPlaylist *)malloc(M * sizeof(TPlaylist)); //reservatório do tamanho da entrada
     int posicaoReservatorio = 0;
     int numParticao = 1;
