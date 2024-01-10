@@ -105,7 +105,7 @@ int main() {
 
         FILE* arqMusicas;
         if((arqMusicas = fopen("musicas.dat", "w+b")) == NULL) {
-            printf("ERRO! Não foi possível encontrar ou criar o arquivo PLAYLIST!\n");
+            printf("ERRO! Não foi possível encontrar ou criar o arquivo MUSICAS!\n");
             exit(1);
         }
         else {
@@ -116,7 +116,7 @@ int main() {
 
             double timeMerge = ((double)(endMergeMusicas - startMergeMusicas)) / CLOCKS_PER_SEC;
 
-            fprintf(log, "\n\n\n***Base de dados (50.000) de MUSICAS***");
+            fprintf(log, "\n\n\n***Base de dados (30.000) de MUSICAS***");
             fprintf(log, "\nTempo de ordenação com MERGE SORT > %.2f segundos.", timeMerge);
             fprintf(log, "\nNúmero de comparações com MERGE SORT > %d.", contMergeSort);
             fclose(arqMusicas);
@@ -124,7 +124,7 @@ int main() {
 
         // Criar uma nova base desordenada para a classificação externa
         if ((arqMusicas = fopen("musicas2.dat", "w+b")) == NULL) {
-            printf("ERRO! Não foi possível encontrar ou criar o arquivo PLAYLIST2!\n");
+            printf("ERRO! Não foi possível encontrar ou criar o arquivo MUSICAS2!\n");
             exit(1);
         }
         else {
@@ -133,7 +133,7 @@ int main() {
         }
         // Reabrir a nova base desordenada em modo de leitura binária para realizar a classificação externa na nova base desordenada
         if ((arqMusicas = fopen("musicas2.dat", "r+b")) == NULL) {
-            printf("ERRO! Não foi possível abrir o arquivo PLAYLIST2!\n");
+            printf("ERRO! Não foi possível abrir o arquivo MUSICAS2!\n");
             exit(1);
         } else {
             clock_t startClassificacaoExterna = clock();
@@ -163,6 +163,36 @@ int main() {
 
             fclose(arqMusicas);
         }
+
+
+
+
+        printf("\n\n*******************************************\n\n");
+        numeroParticoes = 0;
+        const char *pastaUsuario = "partitions_usuario";
+        char **particoesArquivosUsuario = (char **) malloc(MAX_PARTITIONS * sizeof(char *));
+
+        //USUÁRIO
+
+        FILE* arqUsuario;
+        if((arqUsuario = fopen("usuario.dat", "w+b")) == NULL) {
+            printf("ERRO! Não foi possível encontrar ou criar o arquivo PLAYLIST2!\n");
+            exit(1);
+        }
+        else {
+            criarBaseDesordenadaUsuario(arqUsuario, 50000);
+            clock_t startMergeUsuario = clock();
+            int contMergeSort = mergeSortUsuario(arqUsuario, 0, tamanhoArquivoUsuario(arqUsuario) - 1);
+            clock_t endMergeUsuario = clock();
+
+            double timeMerge = ((double)(endMergeUsuario - startMergeUsuario)) / CLOCKS_PER_SEC;
+
+            fprintf(log, "\n\n\n***Base de dados (50.000) de USUARIO***");
+            fprintf(log, "\nTempo de ordenação com MERGE SORT > %.2f segundos.", timeMerge);
+            fprintf(log, "\nNúmero de comparações com MERGE SORT > %d.", contMergeSort);
+            fclose(arqMusicas);
+        }
+
 
 
 

@@ -63,10 +63,12 @@ int classificacaoInternaUsuario(FILE *arq, int M);
 //Junta as partições classificadas , gerando um arquivo classificado
 void intercalacaoBasicaUsuario(FILE *out, int num_p);
 
+
+/*
 //Usuario cria playlist
 void criarPlaylist(TUsuario *usuario, TPlaylist *playlist);
 
 //Usuario cria reviews
 void criarReviews(TMusicas* music, TReviews *review);
-
+*/
 #endif //TP02_AEDSII_CSI104_USUARIO_H
