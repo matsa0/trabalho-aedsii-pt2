@@ -21,7 +21,7 @@ int main() {
     FILE *log;
     FILE *arqPlaylist;
     const char *pastaPlaylist = "partitions_playlist";
-    char **particoesArquivos = (char **) malloc(MAX_PARTITIONS * sizeof(char *));
+    char **particoesArquivosPlaylist = (char **) malloc(MAX_PARTITIONS * sizeof(char *));
     int numeroParticoes = 0;
 
     //Abrindo o LOG
@@ -70,11 +70,11 @@ int main() {
             int countSelecaoNatural = 0;
             selecaoNaturalPlaylist(arqPlaylist, 120, &countSelecaoNatural);
 
-            capturaParticoes(pastaPlaylist, particoesArquivos, &numeroParticoes);
+            capturaParticoes(pastaPlaylist, particoesArquivosPlaylist, &numeroParticoes);
 
             int countIntercalacaoOtima = 0;
             if (numeroParticoes > 0) {
-                intercalacaoOtima(particoesArquivos, "partitions_playlist/playlist_intercalada.dat", numeroParticoes, &countIntercalacaoOtima);
+                intercalacaoOtima(particoesArquivosPlaylist, "partitions_playlist/playlist_intercalada.dat", numeroParticoes, &countIntercalacaoOtima);
                 printf("Intercalacao PLAYLIST concluida com sucesso!\n");
             } else {
                 printf("Nenhuma particao de PLAYLIST encontrada no diretorio.\n");
@@ -87,9 +87,9 @@ int main() {
 
             // Liberar memória alocada para os nomes das partições
             for (int i = 0; i < numeroParticoes; i++) {
-                free(particoesArquivos[i]);
+                free(particoesArquivosPlaylist[i]);
             }
-            free(particoesArquivos);
+            free(particoesArquivosPlaylist);
 
             fclose(arqPlaylist);
         }
@@ -98,6 +98,8 @@ int main() {
 
         printf("\n\n*******************************************\n\n");
         numeroParticoes = 0;
+        const char *pastaMusicas = "partitions_musicas";
+        char **particoesArquivosMusicas = (char **) malloc(MAX_PARTITIONS * sizeof(char *));
 
         //MÚSICAS
 
@@ -107,7 +109,7 @@ int main() {
             exit(1);
         }
         else {
-            criarBaseDesordenadaMusicas(arqMusicas, 50000);
+            criarBaseDesordenadaMusicas(arqMusicas, 30000);
             clock_t startMergeMusicas = clock();
             int contMergeSort = mergeSortMusicas(arqMusicas, 0, tamanhoArquivoMusicas(arqMusicas) - 1);
             clock_t endMergeMusicas = clock();
@@ -119,6 +121,49 @@ int main() {
             fprintf(log, "\nNúmero de comparações com MERGE SORT > %d.", contMergeSort);
             fclose(arqMusicas);
         }
+
+        // Criar uma nova base desordenada para a classificação externa
+        if ((arqMusicas = fopen("musicas2.dat", "w+b")) == NULL) {
+            printf("ERRO! Não foi possível encontrar ou criar o arquivo PLAYLIST2!\n");
+            exit(1);
+        }
+        else {
+            criarBaseDesordenadaMusicas(arqMusicas, 30000);
+            fclose(arqMusicas);
+        }
+        // Reabrir a nova base desordenada em modo de leitura binária para realizar a classificação externa na nova base desordenada
+        if ((arqMusicas = fopen("musicas2.dat", "r+b")) == NULL) {
+            printf("ERRO! Não foi possível abrir o arquivo PLAYLIST2!\n");
+            exit(1);
+        } else {
+            clock_t startClassificacaoExterna = clock();
+            int countSelecaoNatural = 0;
+            selecaoNaturalMusicas(arqMusicas, 256, &countSelecaoNatural);
+
+            capturaParticoes(pastaMusicas, particoesArquivosMusicas, &numeroParticoes);
+
+            int countIntercalacaoOtima = 0;
+            if (numeroParticoes > 0) {
+                intercalacaoOtima(particoesArquivosMusicas, "partitions_musicas/musicas_intercalada.dat", numeroParticoes, &countIntercalacaoOtima);
+                printf("Intercalacao MUSICAS concluida com sucesso!\n");
+            } else {
+                printf("Nenhuma particao de MUSICAS encontrada no diretorio.\n");
+            }
+            clock_t endClassificacaoExterna = clock();
+
+            double timeClassificacao = ((double)(endClassificacaoExterna - startClassificacaoExterna)) / CLOCKS_PER_SEC;
+            fprintf(log, "\n\nTempo de ordenação com SELEÇÃO NATURAL e INTERCALAÇÃO ÓTIMA > %.2f segundos.", timeClassificacao);
+            fprintf(log, "\nNúmero de comparações com SELEÇÃO NATURAL + INTERCALAÇÃO ÓTIMA > %d.", countSelecaoNatural + countIntercalacaoOtima);
+
+            // Liberar memória alocada para os nomes das partições
+            for (int i = 0; i < numeroParticoes; i++) {
+                free(particoesArquivosMusicas[i]);
+            }
+            free(particoesArquivosMusicas);
+
+            fclose(arqMusicas);
+        }
+
 
 
         fflush(log);

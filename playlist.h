@@ -65,6 +65,7 @@ int mergeSortPlaylist(FILE *arq, int inicio, int fim);
 
 //Seleção Natural para partições maiores
 int selecaoNaturalPlaylist(FILE *arqEntrada, int M, int *numComparacoes);
+
 /*
 //ordena base de dados com insertion sort
 void insertionSortPlaylist(FILE *arq, FILE *log, int tam);
