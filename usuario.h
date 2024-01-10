@@ -57,12 +57,14 @@ int tamanhoRegistroUsuario();
 
 int tamanhoArquivoUsuario(FILE * arq);
 
-//Classificação interna usuario
-int classificacaoInternaUsuario(FILE *arq, int M);
+//Mesclar duas partições ordenadas
+void mergeUsuario(FILE *arq, int inicio, int meio, int fim);
 
-//Junta as partições classificadas , gerando um arquivo classificado
-void intercalacaoBasicaUsuario(FILE *out, int num_p);
+//Ordenação por MergeSort
+int mergeSortUsuario(FILE *arq, int inicio, int fim);
 
+//Seleção Natural para partições maiores
+int selecaoNaturalUsuario(FILE *arqEntrada, int M, int *numComparacoes);
 
 /*
 //Usuario cria playlist

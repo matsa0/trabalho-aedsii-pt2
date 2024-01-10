@@ -1,19 +1,22 @@
-***Base de dados (20.000) de PLAYLIST***
-Tempo de ordenação com MERGE SORT > 0.31 segundos.
-Número de comparações com MERGE SORT > 194419.
+***Base de dados (10.000) de PLAYLIST***
+Tempo de ordenação com MERGE SORT > 0.19 segundos.
+Número de comparações com MERGE SORT > 89265.
 
-Tempo de ordenação com SELEÇÃO NATURAL e INTERCALAÇÃO ÓTIMA > 0.38 segundos.
-Número de comparações com SELEÇÃO NATURAL + INTERCALAÇÃO ÓTIMA > 34978.
-
-
-***Base de dados (30.000) de MUSICAS***
-Tempo de ordenação com MERGE SORT > 0.23 segundos.
-Número de comparações com MERGE SORT > 317473.
-
-Tempo de ordenação com SELEÇÃO NATURAL e INTERCALAÇÃO ÓTIMA > 0.30 segundos.
-Número de comparações com SELEÇÃO NATURAL + INTERCALAÇÃO ÓTIMA > 107176.
+Tempo de ordenação com SELEÇÃO NATURAL e INTERCALAÇÃO ÓTIMA > 0.04 segundos.
+Número de comparações com SELEÇÃO NATURAL + INTERCALAÇÃO ÓTIMA > 3710.
 
 
-***Base de dados (50.000) de USUARIO***
-Tempo de ordenação com MERGE SORT > 0.78 segundos.
-Número de comparações com MERGE SORT > 535789.
+***Base de dados (20.000) de MUSICAS***
+Tempo de ordenação com MERGE SORT > 0.18 segundos.
+Número de comparações com MERGE SORT > 191551.
+
+Tempo de ordenação com SELEÇÃO NATURAL e INTERCALAÇÃO ÓTIMA > 0.04 segundos.
+Número de comparações com SELEÇÃO NATURAL + INTERCALAÇÃO ÓTIMA > 28365.
+
+
+***Base de dados (30.000) de USUARIO***
+Tempo de ordenação com MERGE SORT > 0.53 segundos.
+Número de comparações com MERGE SORT > 301491.
+
+Tempo de ordenação com SELEÇÃO NATURAL e INTERCALAÇÃO ÓTIMA > 0.06 segundos.
+Número de comparações com SELEÇÃO NATURAL + INTERCALAÇÃO ÓTIMA > 9917.

@@ -37,7 +37,7 @@ int main() {
             exit(1);
         }
         else {
-            criarBaseDesordenadaPlaylist(arqPlaylist, 20000);
+            criarBaseDesordenadaPlaylist(arqPlaylist, 10000);
 
             clock_t startMergePlaylist = clock();
             int contMergeSort = mergeSortPlaylist(arqPlaylist, 0, tamanhoArquivoPlaylist(arqPlaylist) - 1);
@@ -45,7 +45,7 @@ int main() {
 
             double timeMerge = ((double)(endMergePlaylist - startMergePlaylist)) / CLOCKS_PER_SEC;
 
-            fprintf(log, "***Base de dados (20.000) de PLAYLIST***");
+            fprintf(log, "***Base de dados (10.000) de PLAYLIST***");
             fprintf(log, "\nTempo de ordenação com MERGE SORT > %.2f segundos.", timeMerge);
             fprintf(log, "\nNúmero de comparações com MERGE SORT > %d.", contMergeSort);
             fclose(arqPlaylist);
@@ -58,7 +58,7 @@ int main() {
             exit(1);
         }
         else {
-            criarBaseDesordenadaPlaylist(arqPlaylist, 20000);
+            criarBaseDesordenadaPlaylist(arqPlaylist, 10000);
             fclose(arqPlaylist);
         }
         // Reabrir a nova base desordenada em modo de leitura binária para realizar a classificação externa na nova base desordenada
@@ -68,16 +68,16 @@ int main() {
         } else {
             clock_t startClassificacaoExterna = clock();
             int countSelecaoNatural = 0;
-            selecaoNaturalPlaylist(arqPlaylist, 120, &countSelecaoNatural);
+            selecaoNaturalPlaylist(arqPlaylist, 100, &countSelecaoNatural);
 
             capturaParticoes(pastaPlaylist, particoesArquivosPlaylist, &numeroParticoes);
 
             int countIntercalacaoOtima = 0;
             if (numeroParticoes > 0) {
-                intercalacaoOtima(particoesArquivosPlaylist, "partitions_playlist/playlist_intercalada.dat", numeroParticoes, &countIntercalacaoOtima);
-                printf("Intercalacao PLAYLIST concluida com sucesso!\n");
+                intercalacaoOtima((const char **) particoesArquivosPlaylist, "partitions_playlist/playlist_intercalada.dat", numeroParticoes, &countIntercalacaoOtima);
+                printf("Intercalacao PLAYLIST concluida com sucesso!");
             } else {
-                printf("Nenhuma particao de PLAYLIST encontrada no diretorio.\n");
+                printf("Nenhuma particao de PLAYLIST encontrada no diretorio.");
             }
             clock_t endClassificacaoExterna = clock();
 
@@ -109,14 +109,14 @@ int main() {
             exit(1);
         }
         else {
-            criarBaseDesordenadaMusicas(arqMusicas, 30000);
+            criarBaseDesordenadaMusicas(arqMusicas, 20000);
             clock_t startMergeMusicas = clock();
             int contMergeSort = mergeSortMusicas(arqMusicas, 0, tamanhoArquivoMusicas(arqMusicas) - 1);
             clock_t endMergeMusicas = clock();
 
             double timeMerge = ((double)(endMergeMusicas - startMergeMusicas)) / CLOCKS_PER_SEC;
 
-            fprintf(log, "\n\n\n***Base de dados (30.000) de MUSICAS***");
+            fprintf(log, "\n\n\n***Base de dados (20.000) de MUSICAS***");
             fprintf(log, "\nTempo de ordenação com MERGE SORT > %.2f segundos.", timeMerge);
             fprintf(log, "\nNúmero de comparações com MERGE SORT > %d.", contMergeSort);
             fclose(arqMusicas);
@@ -128,7 +128,7 @@ int main() {
             exit(1);
         }
         else {
-            criarBaseDesordenadaMusicas(arqMusicas, 30000);
+            criarBaseDesordenadaMusicas(arqMusicas, 20000);
             fclose(arqMusicas);
         }
         // Reabrir a nova base desordenada em modo de leitura binária para realizar a classificação externa na nova base desordenada
@@ -138,13 +138,13 @@ int main() {
         } else {
             clock_t startClassificacaoExterna = clock();
             int countSelecaoNatural = 0;
-            selecaoNaturalMusicas(arqMusicas, 256, &countSelecaoNatural);
+            selecaoNaturalMusicas(arqMusicas, 200, &countSelecaoNatural);
 
             capturaParticoes(pastaMusicas, particoesArquivosMusicas, &numeroParticoes);
 
             int countIntercalacaoOtima = 0;
             if (numeroParticoes > 0) {
-                intercalacaoOtima(particoesArquivosMusicas, "partitions_musicas/musicas_intercalada.dat", numeroParticoes, &countIntercalacaoOtima);
+                intercalacaoOtima((const char **) particoesArquivosMusicas, "partitions_musicas/musicas_intercalada.dat", numeroParticoes, &countIntercalacaoOtima);
                 printf("Intercalacao MUSICAS concluida com sucesso!\n");
             } else {
                 printf("Nenhuma particao de MUSICAS encontrada no diretorio.\n");
@@ -176,24 +176,64 @@ int main() {
 
         FILE* arqUsuario;
         if((arqUsuario = fopen("usuario.dat", "w+b")) == NULL) {
-            printf("ERRO! Não foi possível encontrar ou criar o arquivo PLAYLIST2!\n");
+            printf("ERRO! Não foi possível encontrar ou criar o arquivo USUARIO!\n");
             exit(1);
         }
         else {
-            criarBaseDesordenadaUsuario(arqUsuario, 50000);
+            criarBaseDesordenadaUsuario(arqUsuario, 30000);
             clock_t startMergeUsuario = clock();
             int contMergeSort = mergeSortUsuario(arqUsuario, 0, tamanhoArquivoUsuario(arqUsuario) - 1);
             clock_t endMergeUsuario = clock();
 
             double timeMerge = ((double)(endMergeUsuario - startMergeUsuario)) / CLOCKS_PER_SEC;
 
-            fprintf(log, "\n\n\n***Base de dados (50.000) de USUARIO***");
+            fprintf(log, "\n\n\n***Base de dados (30.000) de USUARIO***");
             fprintf(log, "\nTempo de ordenação com MERGE SORT > %.2f segundos.", timeMerge);
             fprintf(log, "\nNúmero de comparações com MERGE SORT > %d.", contMergeSort);
-            fclose(arqMusicas);
+            fclose(arqUsuario);
         }
 
+        // Criar uma nova base desordenada para a classificação externa
+        if ((arqUsuario = fopen("usuario2.dat", "w+b")) == NULL) {
+            printf("ERRO! Não foi possível encontrar ou criar o arquivo MUSICAS2!\n");
+            exit(1);
+        }
+        else {
+            criarBaseDesordenadaUsuario(arqUsuario, 30000);
+            fclose(arqUsuario);
+        }
+        // Reabrir a nova base desordenada em modo de leitura binária para realizar a classificação externa na nova base desordenada
+        if ((arqUsuario = fopen("usuario2.dat", "r+b")) == NULL) {
+            printf("ERRO! Não foi possível abrir o arquivo MUSICAS2!\n");
+            exit(1);
+        } else {
+            clock_t startClassificacaoExterna = clock();
+            int countSelecaoNatural = 0;
+            selecaoNaturalUsuario(arqUsuario, 150, &countSelecaoNatural);
 
+            capturaParticoes(pastaUsuario, particoesArquivosUsuario, &numeroParticoes);
+
+            int countIntercalacaoOtima = 0;
+            if (numeroParticoes > 0) {
+                intercalacaoOtima((const char **) particoesArquivosUsuario, "partitions_usuario/usuario_intercalado.dat", numeroParticoes, &countIntercalacaoOtima);
+                printf("Intercalacao USUARIO concluida com sucesso!\n");
+            } else {
+                printf("Nenhuma particao de USUARIO encontrada no diretorio.\n");
+            }
+            clock_t endClassificacaoExterna = clock();
+
+            double timeClassificacao = ((double)(endClassificacaoExterna - startClassificacaoExterna)) / CLOCKS_PER_SEC;
+            fprintf(log, "\n\nTempo de ordenação com SELEÇÃO NATURAL e INTERCALAÇÃO ÓTIMA > %.2f segundos.", timeClassificacao);
+            fprintf(log, "\nNúmero de comparações com SELEÇÃO NATURAL + INTERCALAÇÃO ÓTIMA > %d.", countSelecaoNatural + countIntercalacaoOtima);
+
+            // Liberar memória alocada para os nomes das partições
+            for (int i = 0; i < numeroParticoes; i++) {
+                free(particoesArquivosUsuario[i]);
+            }
+            free(particoesArquivosUsuario);
+
+            fclose(arqUsuario);
+        }
 
 
         fflush(log);
