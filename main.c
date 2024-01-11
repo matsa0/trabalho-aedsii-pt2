@@ -236,6 +236,82 @@ int main() {
         }
 
 
+
+
+
+        printf("\n\n*******************************************\n\n");
+        numeroParticoes = 0;
+        const char *pastaReviews = "partitions_reviews";
+        char **particoesArquivosReviews = (char **) malloc(MAX_PARTITIONS * sizeof(char *));
+
+        //USUÁRIO
+
+        FILE* arqReviews;
+        if((arqReviews = fopen("reviews.dat", "w+b")) == NULL) {
+            printf("ERRO! Não foi possível encontrar ou criar o arquivo REVIEWS!\n");
+            exit(1);
+        }
+        else {
+            criarBaseDesordenadaReviews(arqReviews, 40000);
+            clock_t startMergeReviews = clock();
+            int contMergeSort = mergeSortReviews(arqReviews, 0, tamanhoArquivoReviews(arqReviews) - 1);
+            clock_t endMergeReviews = clock();
+
+            double timeMerge = ((double)(endMergeReviews - startMergeReviews)) / CLOCKS_PER_SEC;
+
+            fprintf(log, "\n\n\n***Base de dados (40.000) de REVIEWS***");
+            fprintf(log, "\nTempo de ordenação com MERGE SORT > %.2f segundos.", timeMerge);
+            fprintf(log, "\nNúmero de comparações com MERGE SORT > %d.", contMergeSort);
+            fclose(arqReviews);
+        }
+
+        // Criar uma nova base desordenada para a classificação externa
+        if ((arqReviews = fopen("reviews2.dat", "w+b")) == NULL) {
+            printf("ERRO! Não foi possível encontrar ou criar o arquivo REVIEWS2!\n");
+            exit(1);
+        }
+        else {
+            criarBaseDesordenadaReviews(arqReviews, 40000);
+            fclose(arqReviews);
+        }
+        // Reabrir a nova base desordenada em modo de leitura binária para realizar a classificação externa na nova base desordenada
+        if ((arqReviews = fopen("reviews2.dat", "r+b")) == NULL) {
+            printf("ERRO! Não foi possível abrir o arquivo REVIEWS2!\n");
+            exit(1);
+        } else {
+            clock_t startClassificacaoExterna = clock();
+            int countSelecaoNatural = 0;
+            selecaoNaturalRevoiews(arqReviews, 150, &countSelecaoNatural);
+
+            capturaParticoes(pastaReviews, particoesArquivosReviews, &numeroParticoes);
+
+            int countIntercalacaoOtima = 0;
+            if (numeroParticoes > 0) {
+                intercalacaoOtima((const char **) particoesArquivosReviews, "partitions_reviews/reviews_intercalado.dat", numeroParticoes, &countIntercalacaoOtima);
+                printf("Intercalacao REVIEWS concluida com sucesso!\n");
+            } else {
+                printf("Nenhuma particao de REVIEWS encontrada no diretorio.\n");
+            }
+            clock_t endClassificacaoExterna = clock();
+
+            double timeClassificacao = ((double)(endClassificacaoExterna - startClassificacaoExterna)) / CLOCKS_PER_SEC;
+            fprintf(log, "\n\nTempo de ordenação com SELEÇÃO NATURAL e INTERCALAÇÃO ÓTIMA > %.2f segundos.", timeClassificacao);
+            fprintf(log, "\nNúmero de comparações com SELEÇÃO NATURAL + INTERCALAÇÃO ÓTIMA > %d.", countSelecaoNatural + countIntercalacaoOtima);
+
+            // Liberar memória alocada para os nomes das partições
+            for (int i = 0; i < numeroParticoes; i++) {
+                free(particoesArquivosReviews[i]);
+            }
+            free(particoesArquivosReviews);
+
+            fclose(arqReviews);
+        }
+
+
+
+
+
+
         fflush(log);
         fclose(log);
 

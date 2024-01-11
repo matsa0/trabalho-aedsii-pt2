@@ -51,8 +51,13 @@ int tamanhoRegistroReviews();
 
 int tamanhoArquivoReviews(FILE * arq);
 
-int classificacaoInternaReviews(FILE *arq, int M);
+//Mesclar duas partições ordenadas
+void mergeReviews(FILE *arq, int inicio, int meio, int fim);
 
-void intercalacaoBasicaReviews(FILE *out, int num_p);
+//Ordenação por MergeSort
+int mergeSortReviews(FILE *arq, int inicio, int fim);
+
+//Seleção Natural para partições maiores
+int selecaoNaturalRevoiews(FILE *arqEntrada, int M, int *numComparacoes);
 
 #endif //TP02_AEDSII_CSI104_REVIEWS_H

@@ -195,164 +195,135 @@ TReviews *buscaBinariaReviews(int chave, FILE *in, FILE *out, int inicio, int fi
     return NULL;
 }
 
-//Classificação interna Reviews
-int classificacaoInternaReviews(FILE *arq, int M) {
-    rewind(arq); //posiciona cursor no inicio do arquivo
+int countComparacoes = 0;
+//Mesclar duas partições ordenadas
+void mergeReviews(FILE *arq, int inicio, int meio, int fim) {
+    int i, j, k;
+    int n1 = meio - inicio + 1;
+    int n2 = fim - meio;
 
-    int reg = 0;
-    int nRev = tamanhoArquivoReviews(arq);
-    int qtdParticoes = 0;
-    int t = tamanhoRegistroReviews();
-    char *nomeParticao[20];
+    // Partições temporárias
+    TReviews *esq = (TReviews *)malloc(n1 * sizeof(TReviews));
+    TReviews *dir = (TReviews *)malloc(n2 * sizeof(TReviews));
 
-    //O loop continuará até que todos os registros do arquivo tenham sido processados
-    while (reg != nRev) {
-        //le o arquivo e coloca no vetor
-        TReviews *v[M];
-        int i = 0;
-        while (!feof(arq)) {
-            fseek(arq, (reg) * t, SEEK_SET);
-            v[i] = leMusicas(arq);
-            //     imprime_funcionario(v[i]);
-            i++;
-            reg++;
-            if(i>=M) break;
-        }
-
-        //ajusta tamanho M caso arquivo de entrada tenha terminado antes do vetor
-        if (i != M) {
-            M = i;
-        }
-
-        //faz ordenacao com insertion sort
-        for (int j = 1; j < M; j++) {
-            TReviews *f = v[j];
-            i = j - 1;
-            while ((i >= 0) && (v[i]->id >  f->id)) {
-                v[i + 1] = v[i];
-                i = i - 1;
-            }
-            v[i + 1] = f;
-        }
-
-        //cria arquivo de particao e faz gravacao
-
-        sprintf(nomeParticao, "partitions_reviews/partition%i.dat", qtdParticoes);
-        //nome = fopen(nomeParticao, "wb");
-
-        //printf("\n%s\n", nome);
-
-        FILE *p;
-
-        if ((p = fopen(nomeParticao, "wb+")) == NULL) { //escrita binária
-            printf("Erro criar arquivo de saida\n");
-        } else {
-            for (int i = 0; i < M; i++) {
-                fseek(p, (i) * t, SEEK_SET);
-                salvaReviews(v[i], p);
-                //imprime(v[i]);
-            }
-            //imprimirBase(p);
-            fclose(p);
-            qtdParticoes++;
-        }
-        for(int jj = 0; jj<M; jj++)
-            free(v[jj]);
+    // Copia os dados para as partições temporárias
+    fseek(arq, inicio * tamanhoRegistroReviews(), SEEK_SET);
+    for (i = 0; i < n1; i++) {
+        esq[i] = *leReviews(arq);
     }
 
-    return qtdParticoes;
+    fseek(arq, (meio + 1) * tamanhoRegistroReviews(), SEEK_SET);
+    for (j = 0; j < n2; j++) {
+        dir[j] = *leReviews(arq);
+    }
+
+    // Mescla as partições temporárias em ordem no arquivo
+    i = 0;
+    j = 0;
+    k = inicio;
+
+    while (i < n1 && j < n2) {
+        if (esq[i].id <= dir[j].id) {
+            salvaReviews(&esq[i], arq);
+            i++;
+        } else {
+            salvaReviews(&dir[j], arq);
+            j++;
+        }
+        k++;
+        countComparacoes++;
+    }
+
+    // Copia os elementos restantes, se houver, de esq[] para o arquivo
+    while (i < n1) {
+        salvaReviews(&esq[i], arq);
+        i++;
+        k++;
+    }
+
+    // Copia os elementos restantes, se houver, de dir[] para o arquivo
+    while (j < n2) {
+        salvaReviews(&dir[j], arq);
+        j++;
+        k++;
+    }
+
+    free(esq);
+    free(dir);
 }
 
-//Junta as partições classificadas , gerando um arquivo classificado
-void intercalacaoBasicaReviews(FILE *out, int num_p) {
-    typedef struct vetor{
-        TReviews *rev;
-        FILE *f;
-    }TVet;
+//Ordenação por MergeSort
+int mergeSortReviews(FILE *arq, int inicio, int fim) {
+    if (inicio < fim) {
+        int meio = inicio + (fim - inicio) / 2;
 
-    int fim = 0; //variavel que controla fim do procedimento
-    int particao = 0;
-    char *nome[20];
+        mergeSortReviews(arq, inicio, meio);
+        mergeSortReviews(arq, meio + 1, fim);
 
-
-    //cria vetor de particoes
-    TVet v[num_p];
-
-    //abre arquivos das particoes, colocando variavel de arquivo no campo f do vetor
-    //e primeiro funcionario do arquivo no campo func do vetor
-    for (int i=0; i < num_p; i++) {
-
-        sprintf(nome, "partitions_reviews/partition%i.dat", particao);
-
-        //printf("%s",nome);
-
-        v[i].f = fopen(nome, "rb");
-        //v[i].aux_p = 0;
-
-        if (v[i].f != NULL) {
-            //fseek(v[i].f, v[i].aux_p * tamanho(), SEEK_SET);
-            TReviews *p = leReviews(v[i].f);
-            if (p == NULL) {
-                //arquivo estava vazio
-                //coloca HIGH VALUE nessa posi??o do vetor
-                v[i].rev = reviews(INT_MAX, "");
-            }
-            else {
-                //conseguiu ler funcionario, coloca na posi??o atual do vetor
-                v[i].rev = p;
-            }
-        }
-        else {
-            fim = 1;
-        }
-
-        particao++;
+        mergeReviews(arq, inicio, meio, fim);
     }
+    return countComparacoes;
+}
 
-    //int aux = 0;
+//Seleção Natural para partições maiores
+int selecaoNaturalRevoiews(FILE *arqEntrada, int M, int *numComparacoes) {
+    TUsuario *reservatorio = (TUsuario *)malloc(M * sizeof(TUsuario)); //reservatório do tamanho da entrada
+    int posicaoReservatorio = 0;
+    int numParticao = 1;
 
-    while (!(fim)) { //conseguiu abrir todos os arquivos
-        int menor = INT_MAX;
-        int pos_menor;
-        //encontra o funcionario com menor chave no vetor
-        for(int i = 0; i < num_p; i++){
-            if(v[i].rev->id < menor){
-                menor = v[i].rev->id;
-                pos_menor = i;
-            }
-        }
-        if (menor == INT_MAX) {
-            fim = 1; //terminou processamento
-        }
-        else {
-            //salva funcionario no arquivo de saída
-            //fseek(out, aux * tamanho(), SEEK_SET);
-            salvaReviews(v[pos_menor].rev, out);
-            //printf("%d ",pos_menor);
-            //atualiza posição pos_menor do vetor com pr?ximo funcionario do arquivo
-            //v[pos_menor].aux_p++;
-            //fseek(v[pos_menor].f, v[pos_menor].aux_p * tamanho(), SEEK_SET);
-            TReviews *p = leReviews(v[pos_menor].f);
-            //aux++;
-            if (p == NULL) {
-                //arquivo estava vazio
-                //coloca HIGH VALUE nessa posiçao do vetor
-                v[pos_menor].rev = reviews(INT_MAX, "");
-            }
-            else {
-                v[pos_menor].rev = p;
-            }
-
+    //(Passo 1) Leitura inicial dos primeiros M registros do arquivo para o reservatório
+    for (int i = 0; i < M; i++) {
+        if (fread(&reservatorio[i], sizeof(TUsuario), 1, arqEntrada) != 1) {
+            break;
         }
     }
 
-    //fecha arquivos das partiÇões de entrada
-    for(int i = 0; i < num_p; i++){
-        fclose(v[i].f);
-        //    free(v[i].func);
+    while (1) { //Enquanto houver registros no arqEntrada
+        //(Passo 2) Encontrar o registro com a menor chave no reservatório
+        int menorChave = 0;
+        for (int i = 1; i < M; i++) {
+            (*numComparacoes)++;
+            if (reservatorio[i].id < reservatorio[menorChave].id) {
+                menorChave = i;
+            }
+        }
+
+
+        //(Passo 3) Abre a partição de saída, grava o registro ordenado e fecha
+        char nomeParticao[20];
+        sprintf(nomeParticao, "partitions_reviews/particao_%d.dat", numParticao);
+        FILE *out = fopen(nomeParticao, "w+b");
+        fwrite(&reservatorio[menorChave], sizeof(TUsuario), 1, out);
+        fclose(out);
+
+        //(Passo 4) Substituir, no reservatório, o registro r pelo próximo registro do arqEntrada
+        if (fread(&reservatorio[menorChave], sizeof(TUsuario), 1, arqEntrada) != 1) {
+            break;
+        }
+
+        //(Passo 5) Se a chave do último registro lido for menor que a chave recém gravada na partição, colocar no reservatório
+        if (reservatorio[menorChave].id < reservatorio[0].id) {
+            posicaoReservatorio = 0;
+            continue;
+        }
+
+        //(Passo 6) Copiar registros restantes do reservatório para o array principal em memória
+        int i;
+        for (i = 0; i < M; i++) {
+            if (fread(&reservatorio[i], sizeof(TUsuario), 1, arqEntrada) != 1) {
+                break;
+            }
+        }
+
+        //(Passo 7) Atualiza o restante do reservatório com novos registros do arquivo de entrada
+        posicaoReservatorio = i;
+        numParticao++;
+
+        // Se o reservatório está cheio, grava a próxima partição de saída
+        if (i == M) {
+            i = 0; // Reinicia o índice do reservatório
+        }
     }
-    //fecha arquivo de saída
-    //fclose(out);
-
-
+    free(reservatorio);
+    return *numComparacoes;
 }
