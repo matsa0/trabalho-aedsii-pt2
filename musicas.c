@@ -280,6 +280,13 @@ int selecaoNaturalMusicas(FILE *arqEntrada, int M, int *numComparacoes) {
     int posicaoReservatorio = 0;
     int numParticao = 1;
 
+    //verifica se há alguma partição no diretório, se tiver, ele remove
+    for (int i = 1; i <= MAX_PARTITIONS; i++) {
+        char nomeParticaoExistente[20];
+        sprintf(nomeParticaoExistente, "partitions_musicas/particao_%d.dat", i);
+        remove(nomeParticaoExistente);
+    }
+
     //(Passo 1) Leitura inicial dos primeiros M registros do arquivo para o reservatório
     for (int i = 0; i < M; i++) {
         if (fread(&reservatorio[i], sizeof(TMusicas), 1, arqEntrada) != 1) {

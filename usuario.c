@@ -149,7 +149,7 @@ TUsuario *buscaSequencialUsuario(int chave, FILE *in, FILE* out) {
 
 //escrever a busca binária no log
 void logBuscaBinariaUsuario(FILE* out, int count, clock_t start_time) {
-    sleep(1);
+    //sleep(1);
     clock_t end_time = clock();
     fprintf(out, "\n------------------------------");
     fprintf(out, "\nBusca binária USUARIO");
@@ -272,6 +272,13 @@ int selecaoNaturalUsuario(FILE *arqEntrada, int M, int *numComparacoes) {
     TUsuario *reservatorio = (TUsuario *)malloc(M * sizeof(TUsuario)); //reservatório do tamanho da entrada
     int posicaoReservatorio = 0;
     int numParticao = 1;
+
+    //verifica se há alguma partição no diretório, se tiver, ele remove
+    for (int i = 1; i <= MAX_PARTITIONS; i++) {
+        char nomeParticaoExistente[20];
+        sprintf(nomeParticaoExistente, "partitions_usuario/particao_%d.dat", i);
+        remove(nomeParticaoExistente);
+    }
 
     //(Passo 1) Leitura inicial dos primeiros M registros do arquivo para o reservatório
     for (int i = 0; i < M; i++) {
