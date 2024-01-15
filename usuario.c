@@ -109,7 +109,7 @@ void imprimirBaseUsuario(FILE *out) {
 
 //escrever a busca sequencial no log
 void logBuscaSequencialUsuario(FILE* out, int count, clock_t start_time) {
-    sleep(1);
+    //sleep(1);
     clock_t end_time = clock();
     fprintf(out, "\n------------------------------");
     fprintf(out, "\nBusca sequencial USUARIO");

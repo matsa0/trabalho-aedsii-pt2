@@ -1,5 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
-#define MAX_PARTITIONS 120 // Defina o número máximo de partições .dat esperado na pasta
+#define MAX_PARTITIONS 500 // Defina o número máximo de partições .dat esperado na pasta
 #define F 10 // Escolha o valor de F para intercalar as partições
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,6 +45,7 @@ int main() {
 
             clock_t startMergePlaylist = clock();
             int contMergeSort = mergeSortPlaylist(arqPlaylist, 0, tamanhoArquivoPlaylist(arqPlaylist) - 1);
+            printf("Ordenacao com MergeSort concluida em Playlist!");
             clock_t endMergePlaylist = clock();
 
             double timeMerge = ((double)(endMergePlaylist - startMergePlaylist)) / CLOCKS_PER_SEC;
@@ -120,6 +121,7 @@ int main() {
             criarBaseDesordenadaMusicas(arqMusicas, 20000);
             clock_t startMergeMusicas = clock();
             int contMergeSort = mergeSortMusicas(arqMusicas, 0, tamanhoArquivoMusicas(arqMusicas) - 1);
+            printf("Ordenacao com MergeSort concluida em Musicas!");
             clock_t endMergeMusicas = clock();
 
             double timeMerge = ((double)(endMergeMusicas - startMergeMusicas)) / CLOCKS_PER_SEC;
@@ -146,7 +148,7 @@ int main() {
         } else {
             clock_t startClassificacaoExterna = clock();
             int countSelecaoNatural = 0;
-            selecaoNaturalMusicas(arqMusicas, 200, &countSelecaoNatural);
+            selecaoNaturalMusicas(arqMusicas, 400, &countSelecaoNatural);
 
             capturaParticoes(pastaMusicas, particoesArquivosMusicas, &numeroParticoes);
 
@@ -195,6 +197,7 @@ int main() {
             criarBaseDesordenadaUsuario(arqUsuario, 30000);
             clock_t startMergeUsuario = clock();
             int contMergeSort = mergeSortUsuario(arqUsuario, 0, tamanhoArquivoUsuario(arqUsuario) - 1);
+            printf("Ordenacao com MergeSort concluida em Usuario!");
             clock_t endMergeUsuario = clock();
 
             double timeMerge = ((double)(endMergeUsuario - startMergeUsuario)) / CLOCKS_PER_SEC;
@@ -267,6 +270,7 @@ int main() {
             criarBaseDesordenadaReviews(arqReviews, 40000);
             clock_t startMergeReviews = clock();
             int contMergeSort = mergeSortReviews(arqReviews, 0, tamanhoArquivoReviews(arqReviews) - 1);
+            printf("Ordenacao com MergeSort concluida em Reviews!");
             clock_t endMergeReviews = clock();
 
             double timeMerge = ((double)(endMergeReviews - startMergeReviews)) / CLOCKS_PER_SEC;
@@ -324,8 +328,8 @@ int main() {
 
 
 
+/*
 
-        /*
 
         printf("\n\n*******************************************\n\n");
         numeroParticoes = 0;
@@ -345,6 +349,7 @@ int main() {
 
             clock_t startMergePlaylist = clock();
             int contMergeSort = mergeSortPlaylist(arqPlaylist, 0, tamanhoArquivoPlaylist(arqPlaylist) - 1);
+            printf("Ordenacao com MergeSort concluida em Playlist!");
             clock_t endMergePlaylist = clock();
 
             double timeMerge = ((double)(endMergePlaylist - startMergePlaylist)) / CLOCKS_PER_SEC;
@@ -415,9 +420,10 @@ int main() {
             exit(EXIT_FAILURE);
         }
         else {
-            criarBaseDesordenadaMusicas(arqMusicas, 60000);
+            criarBaseDesordenadaMusicas(arqMusicas, 40000);
             clock_t startMergeMusicas = clock();
             int contMergeSort = mergeSortMusicas(arqMusicas, 0, tamanhoArquivoMusicas(arqMusicas) - 1);
+            printf("Ordenacao com MergeSort concluida em Musicas!");
             clock_t endMergeMusicas = clock();
 
             double timeMerge = ((double)(endMergeMusicas - startMergeMusicas)) / CLOCKS_PER_SEC;
@@ -434,7 +440,7 @@ int main() {
             exit(EXIT_FAILURE);
         }
         else {
-            criarBaseDesordenadaMusicas(arqMusicas, 60000);
+            criarBaseDesordenadaMusicas(arqMusicas, 40000);
             fclose(arqMusicas);
         }
         // Reabrir a nova base desordenada em modo de leitura binária para realizar a classificação externa na nova base desordenada
@@ -444,7 +450,7 @@ int main() {
         } else {
             clock_t startClassificacaoExterna = clock();
             int countSelecaoNatural = 0;
-            selecaoNaturalMusicas(arqMusicas, 600, &countSelecaoNatural);
+            selecaoNaturalMusicas(arqMusicas, 400, &countSelecaoNatural);
 
             capturaParticoes(pastaMusicas, particoesArquivosMusicas2, &numeroParticoes);
 
@@ -480,41 +486,42 @@ int main() {
 
         //USUÁRIO
 
-        if((arqUsuario = fopen("bases_usuario/usuario.dat", "w+b")) == NULL) {
+        if((arqUsuario = fopen("bases_usuario/usuario3.dat", "w+b")) == NULL) {
             printf("ERRO! Não foi possível encontrar ou criar o arquivo USUARIO!\n");
             exit(EXIT_FAILURE);
         }
         else {
-            criarBaseDesordenadaUsuario(arqUsuario, 70000);
+            criarBaseDesordenadaUsuario(arqUsuario, 80000);
             clock_t startMergeUsuario = clock();
             int contMergeSort = mergeSortUsuario(arqUsuario, 0, tamanhoArquivoUsuario(arqUsuario) - 1);
+            printf("Ordenacao com MergeSort concluida em Usuario!");
             clock_t endMergeUsuario = clock();
 
             double timeMerge = ((double)(endMergeUsuario - startMergeUsuario)) / CLOCKS_PER_SEC;
 
-            fprintf(log, "\n\n\n***Base de dados (70.000) de USUARIO***");
+            fprintf(log, "\n\n\n***Base de dados (80.000) de USUARIO***");
             fprintf(log, "\nTempo de ordenação com MERGE SORT > %.2f segundos.", timeMerge);
             fprintf(log, "\nNúmero de comparações com MERGE SORT > %d.", contMergeSort);
             fclose(arqUsuario);
         }
 
         // Criar uma nova base desordenada para a classificação externa
-        if ((arqUsuario = fopen("bases_usuario/usuario2.dat", "w+b")) == NULL) {
+        if ((arqUsuario = fopen("bases_usuario/usuario4.dat", "w+b")) == NULL) {
             printf("ERRO! Não foi possível encontrar ou criar o arquivo MUSICAS2!\n");
             exit(EXIT_FAILURE);
         }
         else {
-            criarBaseDesordenadaUsuario(arqUsuario, 70000);
+            criarBaseDesordenadaUsuario(arqUsuario, 80000);
             fclose(arqUsuario);
         }
         // Reabrir a nova base desordenada em modo de leitura binária para realizar a classificação externa na nova base desordenada
-        if ((arqUsuario = fopen("bases_usuario/usuario2.dat", "r+b")) == NULL) {
+        if ((arqUsuario = fopen("bases_usuario/usuario4.dat", "r+b")) == NULL) {
             printf("ERRO! Não foi possível abrir o arquivo MUSICAS2!\n");
             exit(EXIT_FAILURE);
         } else {
             clock_t startClassificacaoExterna = clock();
             int countSelecaoNatural = 0;
-            selecaoNaturalUsuario(arqUsuario, 300, &countSelecaoNatural);
+            selecaoNaturalUsuario(arqUsuario, 500, &countSelecaoNatural);
 
             capturaParticoes(pastaUsuario, particoesArquivosUsuario2, &numeroParticoes);
 
@@ -556,14 +563,15 @@ int main() {
             exit(EXIT_FAILURE);
         }
         else {
-            criarBaseDesordenadaReviews(arqReviews, 80000);
+            criarBaseDesordenadaReviews(arqReviews, 100000);
             clock_t startMergeReviews = clock();
             int contMergeSort = mergeSortReviews(arqReviews, 0, tamanhoArquivoReviews(arqReviews) - 1);
+            printf("Ordenacao com MergeSort concluida em Reviews!");
             clock_t endMergeReviews = clock();
 
             double timeMerge = ((double)(endMergeReviews - startMergeReviews)) / CLOCKS_PER_SEC;
 
-            fprintf(log, "\n\n\n***Base de dados (80.000) de REVIEWS***");
+            fprintf(log, "\n\n\n***Base de dados (100.000) de REVIEWS***");
             fprintf(log, "\nTempo de ordenação com MERGE SORT > %.2f segundos.", timeMerge);
             fprintf(log, "\nNúmero de comparações com MERGE SORT > %d.", contMergeSort);
             fclose(arqReviews);
@@ -575,7 +583,7 @@ int main() {
             exit(EXIT_FAILURE);
         }
         else {
-            criarBaseDesordenadaReviews(arqReviews, 80000);
+            criarBaseDesordenadaReviews(arqReviews, 100000);
             fclose(arqReviews);
         }
         // Reabrir a nova base desordenada em modo de leitura binária para realizar a classificação externa na nova base desordenada
@@ -585,7 +593,7 @@ int main() {
         } else {
             clock_t startClassificacaoExterna = clock();
             int countSelecaoNatural = 0;
-            selecaoNaturalRevoiews(arqReviews, 800, &countSelecaoNatural);
+            selecaoNaturalRevoiews(arqReviews, 500, &countSelecaoNatural);
 
             capturaParticoes(pastaReviews, particoesArquivosReviews2, &numeroParticoes);
 
@@ -610,8 +618,8 @@ int main() {
 
             fclose(arqReviews);
         }
+*/
 
-    */
 
 
         fflush(log);
